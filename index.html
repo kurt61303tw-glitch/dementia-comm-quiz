@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>💬 話術排雷＆三步接招｜溝通技巧挑戰</title>
+  <style>
+    :root {
+      --bg-warm: #fdf7ec;
+      --card-bg: #ffffff;
+      --border-warm: #ead9bc;
+      --text-main: #44382e;
+      --text-sub: #766658;
+      --amber: #e29628;
+      --green: #48855b;
+      --green-bg: #ebf6ee;
+      --orange: #d97724;
+      --orange-bg: #fff2e6;
+      --red: #cf4c4c;
+      --red-bg: #fdeeee;
+      --shadow: 0 10px 26px rgba(95, 72, 42, 0.09);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: "Microsoft JhengHei", "PingFang TC", "Noto Sans TC", sans-serif;
+      background: linear-gradient(150deg, #fdf7ec 0%, #f1f6f1 100%);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 16px;
+      line-height: 1.55;
+    }
+
+    .game-shell {
+      width: 100%;
+      max-width: 560px;
+      background: var(--card-bg);
+      border: 2px solid var(--border-warm);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #fff1cf 0%, #e7f3ea 100%);
+      padding: 16px 20px 14px;
+      border-bottom: 1.5px solid var(--border-warm);
+    }
+
+    .header-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(255, 255, 255, 0.85);
+      border: 1px solid var(--border-warm);
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      color: #8b5615;
+    }
+
+    .cheat-btn {
+      background: #ffffff;
+      border: 1.5px solid #d7c199;
+      color: #6b5132;
+      border-radius: 999px;
+      padding: 4px 11px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .cheat-btn:hover {
+      background: #fff9ec;
+      border-color: var(--amber);
+    }
+
+    .header h1 {
+      font-size: 18.5px;
+      margin-bottom: 3px;
+    }
+
+    .subtitle {
+      font-size: 12.5px;
+      color: var(--text-sub);
+    }
+
+    .cheat-sheet {
+      display: none;
+      background: #fffdf7;
+      border-bottom: 1.5px dashed var(--border-warm);
+      padding: 12px 18px;
+      font-size: 12.5px;
+    }
+
+    .cheat-sheet.open {
+      display: block;
+      animation: fadeIn 0.2s ease;
+    }
+
+    .cheat-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    @media (max-width: 460px) {
+      .cheat-cols { grid-template-columns: 1fr; }
+    }
+
+    .cheat-card {
+      background: #ffffff;
+      border: 1px solid #eee0c5;
+      border-radius: 10px;
+      padding: 7px 10px;
+    }
+
+    .body-area {
+      padding: 16px 20px 22px;
+    }
+
+    .hud {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .combo-badge {
+      background: #fff3d6;
+      color: #a66011;
+      padding: 2px 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      border: 1px solid #f0d29c;
+    }
+
+    .calm-bar-wrap {
+      margin-bottom: 14px;
+    }
+
+    .calm-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 700;
+      color: #5b7f64;
+      margin-bottom: 4px;
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #f1e8d8;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #e29628, #48855b);
+      transition: width 0.35s ease;
+    }
+
+    .mode-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 3px 10px;
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+
+    .mode-mine {
+      background: #fff0d8;
+      color: #9e5810;
+    }
+
+    .mode-step {
+      background: #e9f4ec;
+      color: #2d6640;
+    }
+
+    .q-box {
+      background: #fffaf0;
+      border: 1.5px solid #efdcb8;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 13px;
+    }
+
+    .q-title {
+      font-size: 15.5px;
+      font-weight: 800;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .q-hint {
+      font-size: 12.5px;
+      color: var(--text-sub);
+    }
+
+    .quote-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      margin-bottom: 10px;
+    }
+
+    .quote-tile {
+      display: flex;
+      align-items: flex-start;
+      gap: 9px;
+      background: #ffffff;
+      border: 2px solid #e5d8c0;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-size: 13.5px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.15s ease;
+      position: relative;
+    }
+
+    .quote-tile:hover:not(:disabled) {
+      border-color: var(--amber);
+      background: #fffcf5;
+    }
+
+    .quote-tile.selected {
+      border-color: #d97724;
+      background: #fff3e3;
+      box-shadow: 0 0 0 2px rgba(217, 119, 36, 0.15);
+    }
+
+    .quote-tile.selected::after {
+      content: "🚨 標記不OK";
+      position: absolute;
+      top: -8px;
+      right: 8px;
+      background: #d97724;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .quote-tile.res-hit {
+      border-color: var(--green);
+      background: var(--green-bg);
+    }
+    .quote-tile.res-hit::after {
+      content: "✅ 抓對地雷";
+      position: absolute;
+      top: -8px;
+      right: 8px;
+      background: var(--green);
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .quote-tile.res-missed {
+      border-color: var(--red);
+      background: var(--red-bg);
+    }
+    .quote-tile.res-missed::after {
+      content: "❗ 漏抓地雷";
+      position: absolute;
+      top: -8px;
+      right: 8px;
+      background: var(--red);
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .quote-tile.res-false {
+      border-color: var(--red);
+      background: #fff4e5;
+    }
+    .quote-tile.res-false::after {
+      content: "❌ 這句其實OK";
+      position: absolute;
+      top: -8px;
+      right: 8px;
+      background: #b85c14;
+      color: #fff;
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    .choice-list {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+    }
+
+    .choice-btn {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      background: #ffffff;
+      border: 2px solid #e5d8c0;
+      border-radius: 13px;
+      padding: 11px 13px;
+      font-size: 13.8px;
+      font-weight: 700;
+      color: var(--text-main);
+      cursor: pointer;
+      text-align: left;
+      font-family: inherit;
+      transition: all 0.16s ease;
+    }
+
+    .choice-btn:hover:not(:disabled) {
+      border-color: var(--amber);
+      background: #fffaf0;
+      transform: translateY(-1px);
+    }
+
+    .choice-btn.correct {
+      border-color: var(--green);
+      background: var(--green-bg);
+      color: #245232;
+    }
+
+    .choice-btn.wrong {
+      border-color: var(--red);
+      background: var(--red-bg);
+      color: #842929;
+    }
+
+    .choice-btn.dimmed {
+      opacity: 0.52;
+    }
+
+    .check-btn, .next-btn, .restart-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 12px 16px;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #e29628, #cf7e19);
+      color: #ffffff;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+      font-family: inherit;
+      box-shadow: 0 4px 12px rgba(207, 126, 25, 0.25);
+      transition: transform 0.15s ease;
+    }
+
+    .check-btn:hover, .next-btn:hover, .restart-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .check-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .feedback {
+      display: none;
+      margin-top: 13px;
+      border-radius: 13px;
+      padding: 13px 15px;
+      font-size: 13.5px;
+      animation: fadeIn 0.25s ease;
+    }
+
+    .feedback.show { display: block; }
+    .feedback.ok { background: var(--green-bg); border: 1.5px solid #b4d6be; color: #244b30; }
+    .feedback.partial { background: var(--orange-bg); border: 1.5px solid #f0c99e; color: #783f0e; }
+    .feedback.ng { background: var(--red-bg); border: 1.5px solid #eab7b7; color: #7a2626; }
+
+    .fb-title {
+      font-size: 15px;
+      font-weight: 800;
+      margin-bottom: 5px;
+    }
+
+    .fb-list {
+      margin-top: 6px;
+      padding-left: 16px;
+      font-size: 12.8px;
+      color: var(--text-main);
+    }
+
+    .fb-list li { margin-bottom: 4px; }
+
+    .result-area {
+      display: none;
+      text-align: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .result-area.show { display: block; }
+
+    .rank-emoji { font-size: 46px; margin-bottom: 4px; }
+    .final-score { font-size: 25px; font-weight: 800; color: #8b5615; }
+    .final-sub { font-size: 14px; color: var(--text-sub); margin: 4px 0 14px; }
+
+    .review-box {
+      text-align: left;
+      background: #fffaf0;
+      border: 1.5px solid var(--border-warm);
+      border-radius: 13px;
+      padding: 12px 14px;
+      font-size: 12.8px;
+    }
+
+    .review-box h3 {
+      font-size: 13.5px;
+      color: #6b5132;
+      margin-bottom: 6px;
+    }
+
+    .review-row {
+      padding: 5px 0;
+      border-bottom: 1px dashed #ead9bc;
+    }
+
+    .review-row:last-child { border-bottom: none; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="game-shell">
+    <div class="header">
+      <div class="header-top">
+        <span class="pill">💬 溝通技巧實戰挑戰</span>
+        <button class="cheat-btn" id="cheatBtn" type="button">💡 基本功小抄</button>
+      </div>
+      <h1>話術排雷＆三步接招挑戰</h1>
+      <div class="subtitle">小心「聽起來很溫柔、其實不 OK」的話術陷阱！練習真正安撫長者的同理回應。</div>
+    </div>
+
+    <div class="cheat-sheet" id="cheatSheet">
+      <b>📌 溝通基本功：同理 → 回應 → 引導（OK vs 不 OK）</b>
+      <div class="cheat-cols">
+        <div class="cheat-card"><b>✅ OK 三步法</b>先接住情緒（同理）→ 簡短順應（回應）→ 給小任務或二選一（引導）。</div>
+        <div class="cheat-card"><b>✅ 四步靠近＆等待</b>正面微笑 → 平視 → 一次一句 → 耐心等 5～10 秒。</div>
+        <div class="cheat-card"><b>❌ 偽善地雷（不 OK）</b>虛假保證（騙說馬上來）、過度同情（好可憐）、未先同理就硬轉話題。</div>
+        <div class="cheat-card"><b>❌ 傷自尊地雷（不 OK）</b>記憶測試（猜猜我是誰）、命令催促、否定情緒（哭什麼哭）。</div>
+      </div>
+    </div>
+
+    <div class="body-area">
+      <div id="playArea">
+        <div class="hud">
+          <span id="stageText">第 1 / 8 關</span>
+          <div class="hud-right">
+            <span class="combo-badge" id="comboText">🔥 連對 0</span>
+            <span id="scoreText">過關：0</span>
+          </div>
+        </div>
+
+        <div class="calm-bar-wrap">
+          <div class="calm-label">
+            <span>💛 長者安心進度</span>
+            <span id="progressPct">0%</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progressFill"></div>
+          </div>
+        </div>
+
+        <div id="questionContainer"></div>
+
+        <div class="feedback" id="feedbackBox">
+          <div class="fb-title" id="fbTitle"></div>
+          <div id="fbBody"></div>
+          <ul class="fb-list" id="fbList"></ul>
+          <button class="next-btn" id="nextBtn" type="button">下一關 ➡️</button>
+        </div>
+      </div>
+
+      <div class="result-area" id="resultArea">
+        <div class="rank-emoji" id="rankEmoji">💛</div>
+        <div class="final-score" id="finalScore">0 / 8 關完全過關</div>
+        <div class="final-sub" id="finalSub"></div>
+
+        <div class="review-box">
+          <h3>📝 本次溝通地雷與接招複習</h3>
+          <div id="reviewList"></div>
+        </div>
+
+        <button class="restart-btn" id="restartBtn" type="button">🔄 重新挑戰（題目隨機洗牌）</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const STAGES = [
+      {
+        mode: "mine",
+        tag: "🔍 關卡類型 A｜話術排雷（複選題）",
+        title: "傍晚阿嬤又打包衣服吵著要「回家找媽媽」，下面 4 句話聽起來都沒罵人，但藏著【2 個不 OK 的溝通地雷】，請把地雷找出來！",
+        hint: "提示：小心「騙長者馬上就來」跟「還沒安撫就硬轉話題」喔！",
+        items: [
+          { id: "a", icon: "🎭", text: "「阿嬤你放心，你兒子 10 分鐘後就開車來接你回家了喔！」（其實不會來）", isNg: true, reason: "【虛假保證（不 OK）】：答應做不到的事，等一下時間到沒人來，長者會更焦慮、失去對你的信任。" },
+          { id: "b", icon: "📺", text: "「哎呀不要一直想回家啦，快點來看八點檔電視比較好玩！」", isNg: true, reason: "【生硬轉換話題（不 OK）】：沒有先接住阿嬤想媽媽的焦急情緒就硬轉，長者會覺得被敷衍更煩躁。" },
+          { id: "c", icon: "🍵", text: "「想媽媽很著急吼，外面風很大，先喝口溫茶幫我摺毛巾好嗎？」", isNg: false, reason: "做到「同理 → 回應 → 小幫手引導」，非常標準！" },
+          { id: "d", icon: "🤝", text: "「媽媽一定很想你，我先坐在這裡陪你休息一下。」", isNg: false, reason: "接住情緒並給予溫和陪伴，能有效降低焦慮。" }
+        ]
+      },
+      {
+        mode: "mine",
+        tag: "🔍 關卡類型 A｜話術排雷（複選題）",
+        title: "阿公急著找錢包、懷疑有人偷拿。下面 4 句回應裡藏著【2 個不 OK 的地雷】，請抓出來！",
+        hint: "提示：注意「過度同情標籤」與「暗指是你自己亂藏」的話術！",
+        items: [
+          { id: "a", icon: "😢", text: "「唉唷阿公你怎麼又忘記了，年紀大了記性差真的好可憐喔…」", isNg: true, reason: "【過度同情＋貼標籤（不 OK）】：過度憐憫會讓長者覺得自己沒用、受挫，反而更無助或生氣。" },
+          { id: "b", icon: "👉", text: "「是你自己上次塞在枕頭下面的啦！來，我直接幫你拿出來。」", isNg: true, reason: "【指責＋代勞（不 OK）】：講「是你自己放的」會傷面子引發防衛心，讓他自己找出來或一起找才保自尊。" },
+          { id: "c", icon: "💛", text: "「錢包不見一定很緊張，那對你很重要耶！」", isNg: false, reason: "先同理緊張的心情並肯定物品重要性，是很好的第一步。" },
+          { id: "d", icon: "🔎", text: "「走，我們一起去房間櫃子跟床邊找找看！」", isNg: false, reason: "用「陪同尋寶」取代爭辯，讓長者自己看到找到更安心。" }
+        ]
+      },
+      {
+        mode: "mine",
+        tag: "🔍 關卡類型 A｜話術排雷（複選題）",
+        title: "剛走進交誼廳準備跟失智阿嬤互動，哪【2 個做法／話術是不 OK 的地雷】？",
+        hint: "提示：想一想「四步靠近」和「記憶測試」的原則！",
+        items: [
+          { id: "a", icon: "❓", text: "「阿嬤你看我是誰？猜猜看，昨天才見過面耶，想不起來嗎？」", isNg: true, reason: "【記憶測試（不 OK）】：叫失智長者「猜猜我是誰」就像當眾考他不會的題目，只會造成挫折與焦慮！" },
+          { id: "b", icon: "⚡", text: "直接從背後拍她的肩膀大聲喊：「阿嬤！要吃飯囉！」", isNg: true, reason: "【未四步靠近（不 OK）】：從背後或死角突然碰觸與大聲喊叫，會嚇到長者甚至引發防衛揮手。" },
+          { id: "c", icon: "😊", text: "走到正面視線平視、微笑說：「阿嬤早安，我是小樺，今天氣色真好！」", isNg: false, reason: "主動報上名字＋正面平視微笑，讓長者安心又有尊嚴。" },
+          { id: "d", icon: "⏳", text: "一次只問一個簡短問題，微笑耐心等 5～10 秒讓她回答。", isNg: false, reason: "失智長者大腦處理語言較慢，給 5～10 秒等待時間非常正確！" }
+        ]
+      },
+      {
+        mode: "mine",
+        tag: "🔍 關卡類型 A｜話術排雷（複選題）",
+        title: "阿嬤每隔 3 分鐘就重複問一次「現在幾點？吃飯了嗎？」，哪【2 個回應是不 OK 的地雷】？",
+        hint: "提示：注意「急躁糾正」和「敷衍打發」！",
+        items: [
+          { id: "a", icon: "⌚", text: "「你剛已經問過五次了！手錶就在手上不會自己看喔！」", isNg: true, reason: "【急躁糾正（不 OK）】：她不是故意煩人，是腦袋沒存檔；責備只會讓彼此情緒都炸掉。" },
+          { id: "b", icon: "🛏️", text: "「還早啦，不要一直問，你趕快回床上躺著就不會餓了！」", isNg: true, reason: "【命令式打發（不 OK）】：沒有解決她的不安，命令語氣更容易引發反抗。" },
+          { id: "c", icon: "📋", text: "帶著她看桌上的大字白板：「上面寫 12 點吃飯，我們再等一下下喔。」", isNg: false, reason: "用視覺提示卡代替口頭爭辯，讓長者自己看到答案最安心。" },
+          { id: "d", icon: "🍪", text: "「肚子餓了吼，先喝一小口溫豆漿墊墊胃，等一下就開飯囉。」", isNg: false, reason: "先同理飢餓感並給予小點心轉移，很溫暖！" }
+        ]
+      },
+      {
+        mode: "step",
+        tag: "💛 關卡類型 B｜三步接招（進階抉擇）",
+        title: "傍晚帶阿嬤去洗澡，她抓著門框大喊「我不要洗！水很冷！」。下面哪一句最能做到「給控制感＋溫和引導」？",
+        hint: "思考重點：避免命令催促，改用「有限度的二選一」保留自主感！",
+        options: [
+          { text: "「不行喔，規定每天都要洗澡，你不洗會臭掉生病！」", correct: false },
+          { text: "「好好好，那這禮拜都不要洗沒關係，你開心就好。」", correct: false },
+          { text: "「怕冷對不對？今天浴室有開暖氣，你想先泡溫水洗腳，還是先用熱毛巾擦背？」", correct: true },
+          { text: "「別怕啦我動作很快，5 分鐘就洗好了不會冷！」（邊說邊拉她衣服）", correct: false }
+        ],
+        explain: "抗拒洗澡常是因為怕冷或失去控制感！直接拉扯或說「5 分鐘就好（虛假保證）」會引發恐懼；先同理怕冷，再給「泡腳 vs 擦背」的二選一，讓長者自己決定第一步最有效。"
+      },
+      {
+        mode: "step",
+        tag: "💛 關卡類型 B｜三步接招（進階抉擇）",
+        title: "路易氏體阿公指著窗簾陰影說：「那裡有兩個陌生人在看我，好可怕！」哪一個回應最安全不踩雷？",
+        hint: "思考重點：不可否定幻覺，但也不要演戲強化恐怖感！",
+        options: [
+          { text: "「哪有人啦！那是窗簾影子，你眼睛老花看錯了！」", correct: false },
+          { text: "「真的嗎？太可怕了，我拿掃把去把那兩個壞人趕走！」", correct: false },
+          { text: "「看到不認識的人在房間一定很緊張，我陪你把大燈打開、窗簾拉好確認安全。」", correct: true },
+          { text: "「唉唷好可憐喔，怎麼天天都看到奇怪的東西…」", correct: false }
+        ],
+        explain: "面對視幻覺，說「你看錯了」會讓長者覺得你不相信他；但拿掃把趕人反而會讓他更確信真的有壞人！正確做法是「同理緊張感＋開亮燈光消除陰影」來恢復安全感。"
+      },
+      {
+        mode: "step",
+        tag: "💛 關卡類型 B｜三步接招（進階抉擇）",
+        title: "阿嬤吃飯吃到一半突然紅了眼眶掉眼淚，小聲說想念過世的老伴。下面哪個回應最符合「接納情緒表達」？",
+        hint: "思考重點：避開「哭＝不應該」的否定價值觀，也別還沒同理就急著換話題！",
+        options: [
+          { text: "「阿嬤不要哭啦，吃飯哭不吉利，而且大家都在看！」", correct: false },
+          { text: "「先不要想那個了，你看今天的滷肉超香的，快吃一口！」", correct: false },
+          { text: "「好想阿公心裡酸酸的吼…想哭就哭一下沒關係，我坐在旁邊陪你，先拿張面紙擦擦。」", correct: true },
+          { text: "「別難過了，阿公在天上一定不希望看到你這樣哭。」", correct: false }
+        ],
+        explain: "「想哭就哭沒關係」非常重要！說教「哭不吉利」或急著講大道理、馬上叫她看滷肉，都是否定或壓抑情緒。先陪她流淚、遞面紙，情緒宣洩後她自然會願意繼續吃飯。"
+      },
+      {
+        mode: "step",
+        tag: "💛 關卡類型 B｜三步接招（進階抉擇）",
+        title: "交誼廳正在辦熱鬧的手作活動，但阿公一直搖頭往後退說「我不要去！」。怎麼回應最不傷自尊又能引導參與？",
+        hint: "思考重點：社交退縮有時是因為「怕吵、怕做不好丟臉」！",
+        options: [
+          { text: "「大家都在玩你不去很不合群耶，快點坐下啦！」", correct: false },
+          { text: "「你先去坐著，我保證 3 分鐘就帶你回來！」", correct: false },
+          { text: "「人太多覺得有點吵對不對？沒關係，那我們先在外面安靜看大家玩，或只幫我挑一張你喜歡的顏色就好。」", correct: true },
+          { text: "「不去就算了，那你一整天都待在房間裡吧。」", correct: false }
+        ],
+        explain: "強迫合群或賭氣都不可取，保證 3 分鐘也是虛假保證。先同理他覺得吵或不想表現的壓力，把門檻降到最低（在旁邊看／只挑一個顏色），就能保留自主感！"
+      }
+    ];
+
+    let deck = [];
+    let idx = 0;
+    let perfectCount = 0;
+    let combo = 0;
+    let selectedSet = new Set();
+    let stageLocked = false;
+    let reviewLog = [];
+
+    const cheatBtn = document.getElementById("cheatBtn");
+    const cheatSheet = document.getElementById("cheatSheet");
+    const playArea = document.getElementById("playArea");
+    const resultArea = document.getElementById("resultArea");
+    const stageText = document.getElementById("stageText");
+    const comboText = document.getElementById("comboText");
+    const scoreText = document.getElementById("scoreText");
+    const progressPct = document.getElementById("progressPct");
+    const progressFill = document.getElementById("progressFill");
+    const questionContainer = document.getElementById("questionContainer");
+    const feedbackBox = document.getElementById("feedbackBox");
+    const fbTitle = document.getElementById("fbTitle");
+    const fbBody = document.getElementById("fbBody");
+    const fbList = document.getElementById("fbList");
+    const nextBtn = document.getElementById("nextBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    cheatBtn.addEventListener("click", () => {
+      const open = cheatSheet.classList.toggle("open");
+      cheatBtn.textContent = open ? "🙈 收起小抄" : "💡 基本功小抄";
+    });
+
+    function shuffle(arr) {
+      const a = [...arr];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function startGame() {
+      const mines = shuffle(STAGES.filter(s => s.mode === "mine"));
+      const steps = shuffle(STAGES.filter(s => s.mode === "step"));
+      deck = [];
+      for (let i = 0; i < 4; i++) {
+        deck.push(mines[i], steps[i]);
+      }
+      idx = 0;
+      perfectCount = 0;
+      combo = 0;
+      reviewLog = [];
+      playArea.style.display = "block";
+      resultArea.classList.remove("show");
+      renderStage();
+    }
+
+    function updateHud(stepDone = false) {
+      const pct = Math.round(((stepDone ? idx + 1 : idx) / deck.length) * 100);
+      stageText.textContent = `第 ${idx + 1} / ${deck.length} 關`;
+      comboText.textContent = `🔥 連對 ${combo}`;
+      scoreText.textContent = `過關：${perfectCount}`;
+      progressPct.textContent = `${pct}%`;
+      progressFill.style.width = `${pct}%`;
+    }
+
+    function renderStage() {
+      stageLocked = false;
+      selectedSet.clear();
+      feedbackBox.className = "feedback";
+      fbList.innerHTML = "";
+      updateHud(false);
+
+      const st = deck[idx];
+
+      if (st.mode === "mine") {
+        const itemsHtml = shuffle(st.items).map(it => `
+          <button type="button" class="quote-tile" data-id="${it.id}">
+            <span>${it.icon}</span>
+            <span>${it.text}</span>
+          </button>
+        `).join("");
+
+        questionContainer.innerHTML = `
+          <span class="mode-tag mode-mine">${st.tag}</span>
+          <div class="q-box">
+            <div class="q-title">${st.title}</div>
+            <div class="q-hint">${st.hint}</div>
+          </div>
+          <div class="quote-grid">${itemsHtml}</div>
+          <button type="button" class="check-btn" id="checkMineBtn" disabled>🔍 檢查話術（已選 0 句）</button>
+        `;
+
+        const checkBtn = document.getElementById("checkMineBtn");
+        document.querySelectorAll(".quote-tile").forEach(tile => {
+          tile.addEventListener("click", () => {
+            if (stageLocked) return;
+            const id = tile.dataset.id;
+            if (selectedSet.has(id)) {
+              selectedSet.delete(id);
+              tile.classList.remove("selected");
+            } else {
+              selectedSet.add(id);
+              tile.classList.add("selected");
+            }
+            checkBtn.disabled = selectedSet.size === 0;
+            checkBtn.textContent = `🔍 檢查話術（已選 ${selectedSet.size} 句）`;
+          });
+        });
+
+        checkBtn.addEventListener("click", () => evaluateMine(st));
+      } else {
+        const optsHtml = shuffle(st.options).map(op => `
+          <button type="button" class="choice-btn" data-correct="${op.correct}">
+            <span>${op.text}</span>
+          </button>
+        `).join("");
+
+        questionContainer.innerHTML = `
+          <span class="mode-tag mode-step">${st.tag}</span>
+          <div class="q-box">
+            <div class="q-title">${st.title}</div>
+            <div class="q-hint">${st.hint}</div>
+          </div>
+          <div class="choice-list">${optsHtml}</div>
+        `;
+
+        document.querySelectorAll(".choice-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            if (stageLocked) return;
+            evaluateStep(st, btn);
+          });
+        });
+      }
+    }
+
+    function evaluateMine(st) {
+      stageLocked = true;
+      document.getElementById("checkMineBtn").style.display = "none";
+
+      let hits = 0, missed = 0, falsePos = 0;
+
+      document.querySelectorAll(".quote-tile").forEach(tile => {
+        tile.disabled = true;
+        tile.classList.remove("selected");
+        const item = st.items.find(x => x.id === tile.dataset.id);
+        const picked = selectedSet.has(item.id);
+
+        if (item.isNg && picked) {
+          tile.classList.add("res-hit");
+          hits++;
+        } else if (item.isNg && !picked) {
+          tile.classList.add("res-missed");
+          missed++;
+        } else if (!item.isNg && picked) {
+          tile.classList.add("res-false");
+          falsePos++;
+        }
+      });
+
+      const isPerfect = missed === 0 && falsePos === 0;
+      if (isPerfect) {
+        perfectCount++;
+        combo++;
+        feedbackBox.className = "feedback show ok";
+        fbTitle.textContent = "✅ 排雷成功！一眼看穿偽善話術陷阱！";
+        fbBody.textContent = "你成功挑出所有會讓長者更焦慮或傷自尊的不 OK 說法：";
+      } else if (hits > 0) {
+        combo = 0;
+        feedbackBox.className = "feedback show partial";
+        fbTitle.textContent = `⚠️ 差一點點！（抓對 ${hits} 句，漏抓 ${missed} 句，誤判 ${falsePos} 句）`;
+        fbBody.textContent = "來看看這 2 句看似溫柔的話，為什麼其實是地雷：";
+      } else {
+        combo = 0;
+        feedbackBox.className = "feedback show ng";
+        fbTitle.textContent = "💡 這題的地雷包裝得很客氣喔！";
+        fbBody.textContent = "一起拆解它們為什麼不 OK：";
+      }
+
+      fbList.innerHTML = st.items
+        .filter(x => x.isNg)
+        .map(x => `<li><b>${x.icon}</b> ${x.reason}</li>`)
+        .join("");
+
+      reviewLog.push({ title: st.title, ok: isPerfect });
+      updateHud(true);
+      nextBtn.textContent = idx === deck.length - 1 ? "查看挑戰結果 🏆" : "下一關 ➡️";
+    }
+
+    function evaluateStep(st, chosenBtn) {
+      stageLocked = true;
+      const isCorrect = chosenBtn.dataset.correct === "true";
+
+      document.querySelectorAll(".choice-btn").forEach(b => {
+        b.disabled = true;
+        if (b.dataset.correct === "true") {
+          b.classList.add("correct");
+        } else if (b === chosenBtn && !isCorrect) {
+          b.classList.add("wrong");
+        } else {
+          b.classList.add("dimmed");
+        }
+      });
+
+      if (isCorrect) {
+        perfectCount++;
+        combo++;
+        feedbackBox.className = "feedback show ok";
+        fbTitle.textContent = "✅ 接招滿分！長者情緒瞬間安心許多！";
+      } else {
+        combo = 0;
+        feedbackBox.className = "feedback show ng";
+        fbTitle.textContent = "🚨 哎呀！這句容易讓長者更緊繃或感覺被否定";
+      }
+
+      fbBody.textContent = st.explain;
+      reviewLog.push({ title: st.title, ok: isCorrect });
+      updateHud(true);
+      nextBtn.textContent = idx === deck.length - 1 ? "查看挑戰結果 🏆" : "下一關 ➡️";
+    }
+
+    nextBtn.addEventListener("click", () => {
+      idx++;
+      if (idx < deck.length) {
+        renderStage();
+      } else {
+        showResult();
+      }
+    });
+
+    function showResult() {
+      playArea.style.display = "none";
+      resultArea.classList.add("show");
+
+      document.getElementById("finalScore").textContent = `${perfectCount} / ${deck.length} 關完全過關`;
+
+      let emoji = "💛";
+      let sub = "溝通最難的是避開「看似好意卻傷到長者」的地雷，多玩一次就會更敏銳！";
+      if (perfectCount === deck.length) {
+        emoji = "🏆";
+        sub = "滿分通關！你完全掌握了「同理 → 回應 → 引導」與所有隱藏地雷！";
+      } else if (perfectCount >= 6) {
+        emoji = "🌟";
+        sub = "表現超棒！你已經能用溫暖又不失尊嚴的方式接住長者情緒囉！";
+      }
+
+      document.getElementById("rankEmoji").textContent = emoji;
+      document.getElementById("finalSub").textContent = sub;
+
+      document.getElementById("reviewList").innerHTML = reviewLog.map((r, i) => `
+        <div class="review-row">
+          <b>${r.ok ? "✅" : "📌"} 第 ${i + 1} 關：</b>${r.title}
+        </div>
+      `).join("");
+    }
+
+    restartBtn.addEventListener("click", startGame);
+    startGame();
+  </script>
+</body>
+</html>
